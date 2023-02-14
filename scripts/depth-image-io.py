@@ -27,6 +27,7 @@ from ldm.data.util import AddMiDaS
 import modules.processing as processing
 import modules.scripts as scripts
 import modules.shared as shared
+from modules.api.api import decode_base64_to_image, encode_pil_to_base64
 
 instructions = """\
 ### Depth Image I/O
@@ -115,6 +116,7 @@ class Script(scripts.Script):
     def run_inner(self, p, input_depth_img, show_depth):
         is_img2img = isinstance(p, processing.StableDiffusionProcessingImg2Img)
         use_custom_depth_input = bool(input_depth_img)
+        input_depth_img = decode_base64_to_image(input_depth_img)
         if not is_img2img and not use_custom_depth_input:
             raise RuntimeError("If using the Custom Depth Images I/O script with txt2img, you MUST PROVIDE A DEPTH IMAGE (because there's no other image to infer depth from!)")
         p.out_depth_image = None
